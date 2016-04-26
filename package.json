@@ -1,0 +1,30 @@
+{
+  "name": "spotlight-setup-station",
+  "version": "1.0.0",
+  "description": "Setup Station for Spotlight Senior Project",
+  "main": "setup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "clear; node setup.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jordankid93/spotlight-setup-station.git"
+  },
+  "author": "Isaiah Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jordankid93/spotlight-setup-station/issues"
+  },
+  "homepage": "https://github.com/jordankid93/spotlight-setup-station#readme",
+  "devDependencies": {
+    "jshint": "^2.9.2"
+  },
+  "dependencies": {
+    "feather-ble": "^1.0.6",
+    "noble": "^1.5.0",
+    "prompt": "^1.0.0",
+    "socket.io": "^1.4.5",
+    "underscore": "^1.8.3"
+  }
+}
