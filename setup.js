@@ -21,12 +21,20 @@ socket.on('connect', function(){
 	socket.emit("RequestWaitingUsers", {});
 
 	// Use testing list of waiting users
-	// handleWaitingUsersResponse([
-	// 	{
-	// 		name: "Isaiah Smith",
-	// 		userID: "abc123"
-	// 	}
-	// ]);
+	// handleWaitingUsersResponse({
+	// 	users: [
+	// 		{
+	// 			_id: '572aa1dd521eb41100cbecda',
+	// 			firstName: 'Clarence',
+	// 			hometown: 'NYC',
+	// 			__v: 0,
+	// 			wearable: false,
+	// 			exhibitVisits: [],
+	// 			aura: [],
+	// 			tags: []
+	// 		}
+	// 	]
+	// });
 });
 
 // Response for users waiting to get wearable
@@ -81,6 +89,14 @@ noble.on('discover', function(peripheral) {
 
 			console.log("\t\tFeather ready!");
 
+			sendMessage(feather, "SetLights", {
+				color: {
+					R: 255,
+					G: 165,
+					B: 0
+				}
+			});
+
 			sendMessage(feather, "UserID", {
 				request: "GET"
 			});
@@ -112,21 +128,25 @@ noble.on('discover', function(peripheral) {
 
 				console.log("Recieved UserID: " + userID);
 
-				if (userID == "") {
-					console.log("Fresh wearable found. Setting up wearable for " + currentUser.name +  "...");
+				if (userID.trim() == "") {
+					console.log("Fresh wearable found. Setting up wearable for " + currentUser.firstName +  "...");
 					sendMessage(feather, "UserID", {
 						request: "SET",
-						userID: currentUser.userID
+						userID: currentUser._id
 					});
 				}
 
-				else if (userID == currentUser.userID) {
+				else if (userID == currentUser._id) {
 					// All setup!
 					socket.emit("UserSetupWithWearable", {
-						userID: currentUser.userID
+						userID: currentUser._id
 					});
-					console.log("Wearable setup for " + currentUser.name + ". Please hand them the wearable...");
+
+					sendMessage(feather, "UpdateLED", 1);
+
+					console.log("Wearable setup for " + currentUser.firstName + ". Please hand them the wearable...");
 					feather.disconnect();
+
 					return;
 				}
 
@@ -166,8 +186,10 @@ function handleWaitingUsersResponse(data) {
 
 	clearConsole();
 
-	_.each(data, function(user, index){
-		console.log(index + ") " + user.name);
+	console.log(data.users.length + " users waiting for wearables\n");
+
+	_.each(data.users, function(user, index){
+		console.log(index + ") " + user.firstName + " - " + user.hometown);
 	});
 
 	console.log("\nPlease select a user to setup...\n");
@@ -183,24 +205,30 @@ function handleWaitingUsersResponse(data) {
 
 		var userIndex = parseInt(result.userIndex);
 
-		if (0 >= userIndex && userIndex < data.length){
-			currentUser = data[userIndex];
+		if (0 <= userIndex && userIndex < data.users.length){
+			currentUser = data.users[userIndex];
+
+			console.log("Current User: " + currentUser.firstName + " - " + currentUser.hometown);
+			// console.log(JSON.stringify(currentUser, null, 4));
 		}
 		else {
 			// User Index Out of bounds
+			console.log("Incorrect user selected. Please try again...");
 			return;
 		}
 
 		// Move this to on recieved users waiting socket response...
 		if (noble.state == "poweredOn") {
 			console.log("Setup Station starting to scan...");
-			noble.startScanning([], true);
+			//noble.startScanning([], true);
+			noble.startScanning();
 		}
 		noble.on('stateChange', function(state) {
 			console.log("Noble state changed...");
 			if (state === 'poweredOn') {
 				console.log("Setup Station starting to scan...");
-				noble.startScanning([], true);
+				//noble.startScanning([], true);
+				noble.startScanning();
 			} else {
 				noble.stopScanning();
 				console.log("Setup Station stopped scanning.");

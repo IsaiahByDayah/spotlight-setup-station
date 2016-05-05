@@ -24,7 +24,7 @@
     "feather-ble": "^1.0.6",
     "noble": "^1.5.0",
     "prompt": "^1.0.0",
-    "socket.io": "^1.4.5",
+    "socket.io": "^1.4.6",
     "underscore": "^1.8.3"
   }
 }
