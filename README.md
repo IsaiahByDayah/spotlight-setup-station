@@ -1,6 +1,6 @@
 # spotlight-setup-station
 
-##### Raspberry Pi systems that communicate with [Spotlight Wearables](https://github.com/jordankid93/spotlight-wearable) for tracking user's experiences through a museum
+##### Raspberry Pi systems that communicate with [Spotlight Wearables](https://github.com/jordankid93/spotlight-wearable) for setting up a user's experiences through a museum
 
 ### Description:
 A spotlight setup station is a Node.js application you can run on any compatible device such as a laptop, desktop or microcomputer that will act as the beginning pairing station in the Spotlight museum experience. The setup stations queries the backend for users waiting to recieve a wearable device, syncs a new wearable device to that user's profile, and gets the user started on their way.
